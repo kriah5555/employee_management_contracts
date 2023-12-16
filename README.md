@@ -21,4 +21,6 @@ Apply Migrations: Run "flask db upgrade" to apply the generated migrations to th
 
 If you want to reset your database and start fresh, you can drop and recreate the database manually or use a migration command with "flask db downgrade" to rollback the migrations.
 
+to check migrate history use "flask db history"
+
 migrations doc = https://flask-migrate.readthedocs.io/en/latest/
