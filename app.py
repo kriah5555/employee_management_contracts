@@ -5,9 +5,19 @@ import requests  # Add this line to import the requests module
 import subprocess
 import fitz  # PyMuPDF
 import tempfile
+from middleware import log_request, log_response
+from database import db
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
+app.config.from_pyfile('constants.py')  # Load configuration from constants.py
+db.init_app(app)
+migrate = Migrate(app, db)
+
+app.before_request(log_request)
+app.after_request(log_response)
+
 
 @app.route('/attach_contract', methods=['POST'])
 def attach_contract():
