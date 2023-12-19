@@ -1,6 +1,7 @@
 from weasyprint import HTML, CSS
 import requests
 import os
+from datetime import datetime
 
 class PDFclass:
 
@@ -9,7 +10,7 @@ class PDFclass:
         if not os.path.exists('contracts'):
             os.makedirs('contracts')
 
-    def generate_pdf(self, html_body, pdf_file_name, html_file_name, signature_url, old_contract_html = ''):
+    def generate_pdf(self, html_body, pdf_file_name, html_file_name, signature_urls, old_contract_html = ''):
 
         custom_css = """
         @font-face {
@@ -26,7 +27,7 @@ class PDFclass:
                 lines = contract.readlines() 
             lines = ''.join(lines)
 
-        html_body = self.add_signature_to_html_body(html_body, signature_url) + '<br>' + lines
+        html_body = self.add_signature_to_html_body(html_body, signature_urls) + '<br>' + lines
         self.create_html_file(html_body, html_file_name)
 
         html = HTML(string=html_body)
@@ -39,9 +40,9 @@ class PDFclass:
             html_file.write(html_body)
         
 
-    def add_signature_to_html_body(self, html_body, signature_path):
-        if signature_path:
-            html_body = html_body.replace("{signature}", f'<img src="{signature_path}" style="width: 160px; height: 50px;" />')
+    def add_signature_to_html_body(self, html_body, signature_urls):
+        for signature_token, signature_path in signature_urls.items():  # Use .items() for dictionary iteration
+            html_body = html_body.replace(f"{{{signature_token}}}", f'<img src="{signature_path}" style="width: 160px; height: 50px;" />')
         return html_body
 
     def fetch_signature_image(self, signature_url):
@@ -54,15 +55,21 @@ class PDFclass:
         except Exception as e:
             return e 
 
-    def create(self, body, old_contract_html = ''):
+    def create(self, body, old_contract_html = '', employee_signature = '', employer_signature = ''):
         try:
-            signature_url ="http://127.0.0.1:8000/storage/company_logos/company_2_1696945005_output-onlinepngtools.png"
-            file = 'contract_new'
-            pdf_file_name, html_file_name = os.path.join('contracts', f"{file}.pdf"), os.path.join('contracts', f"{file}.html")
+            signature_urls = {
+                'employee_signature': employee_signature or "https://upload.wikimedia.org/wikipedia/commons/a/aa/Henry_Oaminal_Signature.png",
+                'employer_signature': employer_signature or "https://upload.wikimedia.org/wikipedia/commons/a/aa/Henry_Oaminal_Signature.png",
+            }
 
-            self.generate_pdf(body, pdf_file_name, html_file_name, signature_url, old_contract_html)
+            timestamp      = datetime.now().strftime("%Y%m%d%H%M%S")
+            file_prefix    = 'contract_attached_' if old_contract_html else 'contract_'
+            file           = f'{file_prefix}{timestamp}'
+            pdf_file_name  = os.path.join('contracts', f"{file}.pdf")
+            html_file_name = os.path.join('contracts', f"{file}.html")
+            self.generate_pdf(body, pdf_file_name, html_file_name, signature_urls, old_contract_html)
             return pdf_file_name, html_file_name
         except Exception as e:
-            return e 
+            return e
 
     

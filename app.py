@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory
 from PDFclass import PDFclass
 import os
-import requests  # Add this line to import the requests module
+# import requests  # Add this line to import the requests module
 import subprocess
-import fitz  # PyMuPDF
-import tempfile
+# import fitz  # PyMuPDF
+# import tempfile
 from middleware import log_request, log_response
 from database import db
 from flask_migrate import Migrate
@@ -34,16 +34,24 @@ def attach_contract():
 
 @app.route('/create_contract', methods=['POST'])
 def create_contract():
-    # Get the request data
-    request_data = request.get_json()
-    body         = request_data.get('body')
-    pdf          = PDFclass()
-    pdf_file_path, html_file_path = pdf.create(body)
+    try:
+        # Get the request data
+        request_data = request.get_json()
+        body         = request_data.get('body')
 
-    return jsonify({
-        'pdf_file_path': pdf_file_path, 
-        'html_file_path': html_file_path, 
+        # Extract signatures from request data
+        employee_signature = request_data.get('employee_signature', '')
+        employer_signature = request_data.get('employer_signature', '')
+        pdf                           = PDFclass()
+        pdf_file_path, html_file_path = pdf.create(body = body, employee_signature = employee_signature, employer_signature = employer_signature)
+
+        return jsonify({
+            'pdf_file_path': pdf_file_path,
+            'html_file_path': html_file_path,
         })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Route to download the PDF
 @app.route('/contracts/<filename>', methods=['GET'])
