@@ -29,4 +29,7 @@ EXPOSE 5000
 
 COPY ./docker/entrypoint.sh /
 
-ENTRYPOINT ["sh", "/entrypoint.sh"]
+# Run app.py when the container launches
+# CMD ["python", "app.py"]
+
+# ENTRYPOINT ["sh", "/entrypoint.sh"]
