@@ -68,7 +68,7 @@ class PDFclass:
             pdf_file_name  = os.path.join('contracts', f"{file}.pdf")
             html_file_name = os.path.join('contracts', f"{file}.html")
             self.generate_pdf(body, pdf_file_name, html_file_name, signature_urls, old_contract_html)
-            return pdf_file_name, html_file_name
+            return pdf_file_name, html_file_name, file
         except Exception as e:
             return e
 

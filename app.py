@@ -26,11 +26,12 @@ def attach_contract():
     body         = request_data.get('body')
     old_contract = request_data.get('old_contract_html_path')
     pdf          = PDFclass()
-    pdf_file_path, html_file_path = pdf.create(body, old_contract)
+    pdf_file_path, html_file_path, file_name = pdf.create(body, old_contract)
     return jsonify({
         'pdf_file_path': pdf_file_path, 
         'html_file_path': html_file_path, 
-        })
+        'file_name'     : file_name,
+    })
 
 @app.route('/create_contract', methods=['POST'])
 def create_contract():
@@ -43,11 +44,12 @@ def create_contract():
         employee_signature = request_data.get('employee_signature', '')
         employer_signature = request_data.get('employer_signature', '')
         pdf                           = PDFclass()
-        pdf_file_path, html_file_path = pdf.create(body = body, employee_signature = employee_signature, employer_signature = employer_signature)
+        pdf_file_path, html_file_path, file_name = pdf.create(body = body, employee_signature = employee_signature, employer_signature = employer_signature)
 
         return jsonify({
-            'pdf_file_path': pdf_file_path,
+            'pdf_file_path' : pdf_file_path,
             'html_file_path': html_file_path,
+            'file_name'     : file_name,
         })
 
     except Exception as e:
