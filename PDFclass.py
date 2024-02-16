@@ -58,7 +58,7 @@ class PDFclass:
     def create(self, body, old_contract_html = '', employee_signature = '', employer_signature = ''):
         try:
             signatures = {
-                'employee_signature': employee_signature or "",
+                'employee_signature': employee_signature or "{employee_signature}",
                 'employer_signature': employer_signature or "",
             }
 
