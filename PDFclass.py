@@ -1,7 +1,8 @@
-from weasyprint import HTML, CSS
-import requests
 import os
+import random
+import requests
 from datetime import datetime
+from weasyprint import HTML, CSS
 
 class PDFclass:
 
@@ -62,7 +63,7 @@ class PDFclass:
                 'employer_signature': employer_signature or "",
             }
 
-            timestamp      = datetime.now().strftime("%Y%m%d%H%M%S")
+            timestamp      = datetime.now().strftime("%Y%m%d%H%M%S") + str(random.randint(0, 1000))
             file_prefix    = 'contract_attached_' if old_contract_html else 'contract_'
             file           = f'{file_prefix}{timestamp}'
             pdf_file_name  = os.path.join('contracts', f"{file}.pdf")

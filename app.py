@@ -43,7 +43,7 @@ def create_contract():
         # Extract signatures from request data
         employee_signature = request_data.get('employee_signature', '')
         employer_signature = request_data.get('employer_signature', '')
-        pdf                           = PDFclass()
+        pdf                = PDFclass()
         pdf_file_path, html_file_path, file_name = pdf.create(body, '', employee_signature, employer_signature)
 
         return jsonify({
